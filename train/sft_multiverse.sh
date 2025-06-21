@@ -19,7 +19,7 @@ torchrun --nproc-per-node ${gpu_count} --master_port 12345 \
     --per_device_eval_batch_size=${micro_batch_size} \
     --gradient_accumulation_steps=${gradient_accumulation_steps} \
     --num_train_epochs=${epochs} \
-    --train_file_path="Multiverse4FM/Multiverse-1K-mixedd" \
+    --train_file_path="Multiverse4FM/Multiverse-1K-mixed" \
     --model_name=${base_model} \
     --warmup_ratio=0.05 \
     --fsdp="full_shard auto_wrap" \
