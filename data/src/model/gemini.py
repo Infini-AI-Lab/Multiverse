@@ -118,7 +118,15 @@ def main():
     r1_dataset = r1_dataset[start_idx:end_idx]
     logger.info(f"Loaded {len(r1_dataset)} examples from {args.input} from {start_idx} to {end_idx}")
         
+    with open(args.prompt, 'r') as f:
+        prompt = f.read()
     prompt = prompt.split('---\n')
+    
+    if args.structure is not None:
+        with open(args.structure, 'r') as f:
+            structure = f.read()
+    else:
+        structure = None
     
     logger.info(f"Prompt Number: {len(prompt)}")
     for p in prompt:
