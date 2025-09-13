@@ -8,5 +8,5 @@ python gemini.py \
     --input $root_dir/data/1.1k.jsonl \
     --output $root_dir/data/output/step1/ \
     --chat $root_dir/data/output/step1/chat \
-    --start_idx 1 \
-    --end_idx 2
+    --start_idx 0 \
+    --end_idx 1000

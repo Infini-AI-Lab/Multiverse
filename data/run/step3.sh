@@ -8,5 +8,5 @@ python refill_block.py \
     --output_xml $root_dir/data/output/step3/parse \
     --xml_path $root_dir/data/output/step2/parse \
     --prompt $root_dir/data/prompt/step3-prompt.txt \
-    --start_idx 1 \
-    --end_idx 2
+    --start_idx 0 \
+    --end_idx 1000

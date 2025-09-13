@@ -60,10 +60,10 @@ bash run/step3.sh
 
 ### Step 6: Check/Load Data
 
-Refine the data to further enhance its quality. The output of `step3.sh` constructs the refined data.
+Based on the outcome of step 5, we generatet the data with multiverse structure and sequential structure. After the quality check with distance calculation, we gather the data in `1.1k_multiverse.jsonl` file.
 
 ```bash
-bash run/step3.sh
+bash run/gather.sh
 ```
 
 ### Step 7(Optional): Training data

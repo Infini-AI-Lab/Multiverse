@@ -9,5 +9,5 @@ python gemini.py \
     --output $root_dir/data/output/step2/ \
     --chat $root_dir/data/output/step2/chat \
     --structure $root_dir/data/output/step1/ \
-    --start_idx 1 \
-    --end_idx 2
+    --start_idx 0 \
+    --end_idx 1000
