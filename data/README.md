@@ -9,7 +9,10 @@ Data section outlines the process for generating the `Multiverse-1K` dataset. Th
 
 ## Prerequisites
 
-Before initiating the data generation process, you must first acquire the `simplescaling/s1K-1.1` dataset. Once obtained, rename the file to `1.1k.jsonl` and place it in the root directory of this project. You can use follow the step 1 to collect data.
+Install the required package with:
+```bash
+pip install -r requirement.txt
+```
 
 ## Data Generation Pipeline
 
