@@ -2,3 +2,10 @@ ckpts/
 
 wandb/
 
+.DS_Store
+
+data/output/
+
+data/1.1k.jsonl
+
+data/1.1k_multiverse.jsonl
