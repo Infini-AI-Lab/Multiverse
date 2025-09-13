@@ -89,6 +89,8 @@ if __name__ == "__main__":
         for file in os.listdir(dir_path):
             if 'structure' in file or 'answer' in file:
                 continue
+            if os.path.isdir(dir_path + file):
+                continue
             with open(dir_path + file, 'r') as f:
                 material = f.read()
             # check whether starts with ```text and ends with ```, if so remove them

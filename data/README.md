@@ -49,13 +49,21 @@ bash run/parse.sh
 
 ### Step 5: Final Refinement
 
-The last step in the pipeline is to refine the data to further enhance its quality. The output of `step3.sh` constructs the `Multiverse-1K` dataset.
+Refine the data to further enhance its quality. The output of `step3.sh` constructs the refined data.
 
 ```bash
 bash run/step3.sh
 ```
 
-### Step 6(Optional): Training data
+### Step 6: Check/Load Data
+
+Refine the data to further enhance its quality. The output of `step3.sh` constructs the refined data.
+
+```bash
+bash run/step3.sh
+```
+
+### Step 7(Optional): Training data
 
 To convert `Multiverse-1K` data to the training data prepared for the next section, please run:
 ```bash

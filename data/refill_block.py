@@ -17,6 +17,68 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+allowed = [
+    '<Think>', '</Think>',
+    '<Parallel>', '</Parallel>',
+    '<Goal>', '</Goal>',
+    '<Path>', '</Path>',
+    '<Conclusion>', '</Conclusion>'
+]
+
+def escape_xml_tags(text, allowed_tags):
+    """
+    Replaces '<' with '&lt;' and '>' with '&gt;' in a string,
+    except when they are part of specified allowed tags.
+
+    Args:
+        text (str): The input string potentially containing XML-like tags.
+        allowed_tags (list): A list of exact tag strings (including '/')
+                             that should NOT be escaped.
+                             Example: ['<Think>', '</Think>', '<Goal>', '</Goal>']
+
+    Returns:
+        str: The text with appropriate characters escaped.
+    """
+    if not text:
+        return ""
+    if not allowed_tags:
+        # If no tags are allowed, escape all < and >
+        return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+    # Create unique placeholders for each allowed tag
+    placeholders = {}
+    reverse_placeholders = {}
+    for i, tag in enumerate(allowed_tags):
+        # Using UUID ensures placeholders are unique and unlikely to exist in the text
+        placeholder = f"__PLACEHOLDER_{uuid.uuid4()}__"
+        placeholders[tag] = placeholder
+        reverse_placeholders[placeholder] = tag
+
+    # --- Step 1: Protect allowed tags ---
+    modified_text = text
+    # Replace longer tags first to avoid partial replacements if tags are substrings
+    # (e.g., if '<T>' and '</T>' were allowed, replace '</T>' first)
+    # Although with the specific list given, order doesn't strictly matter here.
+    # A simple sort by length descending is a good general strategy.
+    sorted_tags = sorted(placeholders.keys(), key=len, reverse=True)
+    for tag in sorted_tags:
+        # Use regex replacement for exact match (though str.replace works too here)
+        # Ensure we don't accidentally replace parts of other placeholders if generated differently
+        modified_text = modified_text.replace(tag, placeholders[tag])
+
+    # --- Step 2: Escape remaining '<' and '>' ---
+    # First, handle '&' to avoid double-escaping if it appears before < or >
+    modified_text = modified_text.replace('&', '&amp;')
+    modified_text = modified_text.replace('<', '&lt;')
+    modified_text = modified_text.replace('>', '&gt;')
+
+    # --- Step 3: Restore allowed tags ---
+    # No specific order needed for restoring placeholders
+    for placeholder, tag in reverse_placeholders.items():
+        modified_text = modified_text.replace(placeholder, tag)
+
+    return modified_text
+
 def escape_disallowed_tags(xml_string):
     result = []
     pos = 0
@@ -241,6 +303,7 @@ def replace_parallel_block(original_parallel_element, new_parallel_xml_string):
             print("\nNEW XML STRUCTURE:")
             print_element_structure(new_element)
         except Exception as parse_error:
+            print(f"New XML string: {new_parallel_xml_string}")
             print(f"XML PARSE ERROR: {parse_error}")
             print("TRYING TO WRAP WITH ROOT ELEMENT...")
             wrapped_xml = f"<root>{new_parallel_xml_string}</root>"
@@ -336,7 +399,7 @@ async def async_generate_block(client, prompt, thinking, model, parallel_block):
     chat = (prompt, response.text)
     return response.text, chat
 
-def main_loop(input_file_path, output_file_path):
+def main_loop(input_file_path, output_file_path, prompt_path):
     with open(input_file_path, "r", encoding="utf-8") as f:
         original_content = f.read()
     escaped_content = escape_disallowed_tags(original_content)
@@ -366,12 +429,16 @@ def main_loop(input_file_path, output_file_path):
             api_key = os.getenv("GEMINI_API_KEY")
             client = genai.Client(api_key=api_key)
             model = "gemini-2.5-pro-preview-03-25"
-            with open('/Users/yuweia/Downloads/p1/data/prompt-12-v0.txt', 'r') as f:
+            with open(prompt_path, 'r') as f:
                 prompt = f.read()
             response, chat = asyncio.run(async_generate_block(client, prompt, current_full_doc_string, model, original_block_xml_string))
             modified_parallel_xml_string = response
-            with open('/Users/yuweia/Downloads/p1/data/chat.txt', 'a') as f:
-                f.write(chat[0] + "\n" + chat[1] + "\n" + "=" * 100 + "\n")
+            if "```markdown" in modified_parallel_xml_string:
+                modified_parallel_xml_string = modified_parallel_xml_string.replace("```markdown", "")
+            if "```" in modified_parallel_xml_string:
+                modified_parallel_xml_string = modified_parallel_xml_string.replace("```", "")
+            
+            modified_parallel_xml_string = escape_disallowed_tags(modified_parallel_xml_string)
 
             if modified_parallel_xml_string is not None:
                 print(f"\nAttempting to replace block {i+1}...")
@@ -439,8 +506,9 @@ if __name__ == "__main__":
         xml_file_name = f"{uuid}_reasoning.xml"
         xml_file_path = os.path.join(xml_path, xml_file_name)
         output_file_path = os.path.join(output_path, xml_file_name)
+        prompt_path = args.prompt
         try:
-            main_loop(xml_file_path, output_file_path)
+            main_loop(xml_file_path, output_file_path, prompt_path)
         except Exception as e:
             print(f"Error processing {xml_file_path}: {e}")
             continue

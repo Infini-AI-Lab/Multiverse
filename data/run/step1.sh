@@ -2,8 +2,11 @@
 
 export GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 
-python models/gemini.py \
-    --prompt $root_dir/data/prompt-step1.txt \
+cd $root_dir/data/
+python gemini.py \
+    --prompt $root_dir/data/prompt/step1-prompt.txt \
     --input $root_dir/data/1.1k.jsonl \
     --output $root_dir/data/output/step1/ \
-    --chat $root_dir/data/output/step1/chat
+    --chat $root_dir/data/output/step1/chat \
+    --start_idx 1 \
+    --end_idx 2

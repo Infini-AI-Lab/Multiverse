@@ -122,11 +122,11 @@ def main():
         prompt = f.read()
     prompt = prompt.split('---\n')
     
-    if args.structure is not None:
-        with open(args.structure, 'r') as f:
-            structure = f.read()
-    else:
-        structure = None
+    # if args.structure is not None:
+    #     with open(args.structure, 'r') as f:
+    #         structure = f.read()
+    # else:
+    #     structure = None
     
     logger.info(f"Prompt Number: {len(prompt)}")
     for p in prompt:

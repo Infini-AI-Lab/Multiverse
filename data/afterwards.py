@@ -5,8 +5,8 @@ from tqdm import tqdm
 import argparse
 
 def main(args):
-    input_path = args.input_path
-    output_path = args.output_path
+    input_path = args.input_file_path
+    output_path = args.output_file_path
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
@@ -32,7 +32,7 @@ def main(args):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_path", type=str, required=True)
-    parser.add_argument("--output_path", type=str, required=True)
+    parser.add_argument("--input_file_path", type=str, required=True)
+    parser.add_argument("--output_file_path", type=str, required=True)
     args = parser.parse_args()
     main(args)

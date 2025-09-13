@@ -2,7 +2,11 @@
 
 export GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 
-python models/refill_block.py \
+cd $root_dir/data/
+python refill_block.py \
     --input $root_dir/data/1.1k.jsonl \
-    --output_xml $root_dir/data/output/step3/ \
-    --xml_path $root_dir/data/output/step2/parse
+    --output_xml $root_dir/data/output/step3/parse \
+    --xml_path $root_dir/data/output/step2/parse \
+    --prompt $root_dir/data/prompt/step3-prompt.txt \
+    --start_idx 1 \
+    --end_idx 2

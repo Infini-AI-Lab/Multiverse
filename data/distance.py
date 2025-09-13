@@ -13,6 +13,7 @@ if __name__ == "__main__":
     parser.add_argument("--afterwards_dir", type=str, help="Path to the afterwards directory")
     parser.add_argument("--answer_dir", type=str, help="Path to the answer directory", default=None)
     parser.add_argument("--pattern", type=str, help="Pattern of the data")
+    parser.add_argument("--threshold", type=float, help="Threshold of the distance", default=0.4)
     args = parser.parse_args()
     
     if args.pattern == 's1':
@@ -23,7 +24,6 @@ if __name__ == "__main__":
                 ori_data[data["uuid"]] = data
                 
         dataset = datasets.load_dataset("simplescaling/s1K-1.1", split='train')
-        print(f"Load dataset with number of data: {len(dataset)}")
         reasoning_dir = args.reasoning_dir
         files = os.listdir(reasoning_dir)
         rebase_data = list()
@@ -64,7 +64,8 @@ if __name__ == "__main__":
                 d['deepseek_attempt'] = answer
             distance = Levenshtein.distance(d['deepseek_thinking_trajectory_sequential'], d['deepseek_thinking_trajectory']) / max(len(d['deepseek_thinking_trajectory_sequential']), len(d['deepseek_thinking_trajectory']))
             # Set a threshold for the distance
-            if distance > 0.2:
+            if distance > args.threshold:
+                print(f"Warning: distance > {args.threshold}, the data will be skipped")
                 continue
             d['distance'] = distance
             rebase_data.append(d)
@@ -75,31 +76,6 @@ if __name__ == "__main__":
             
         
     elif args.pattern == 'r1':
-        ori_data = dict()
-        with open(args.input_file_path, "r") as f:
-            for line in f:
-                data = json.loads(line)
-                ori_data[data["uuid"]] = data
-            
-        reasoning_dir = args.reasoning_dir
-        files = os.listdir(reasoning_dir)
-
-        rebase_data = list()
-        for file in files:
-            # id_reasoning.txt
-            id_ = file.split("_reasoning")[0]
-            if id_ not in ori_data:
-                raise ValueError(f"id {id} not in ori_data")
-            d = ori_data[id_]
-            d['parallel'] = open(os.path.join(reasoning_dir, file), "r").read()
-            d['sequential'] = d['thinking']
-            d.pop('thinking')
-            rebase_data.append(d)
-            
-        with open("/home/yuweia/Thinking/data/math-r1-rebase.jsonl", "w") as f:
-            for d in rebase_data:
-                f.write(json.dumps(d) + "\n")
-
-        print(f"Rebased {len(rebase_data)} data")
+        raise NotImplementedError("Not implemented")
             
         

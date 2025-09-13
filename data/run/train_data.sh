@@ -2,5 +2,5 @@
 
 cd $root_dir
 
-python src/data/tokenization_autoregressive.py
-python src/data/tokenization_multiverse.py
+python tokenization_autoregressive.py
+python tokenization_multiverse.py
